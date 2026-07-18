@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/* ===== Custom Theme Variables ===== */
+:root {
+  /* Primary palette - Deep Indigo/Blue/Purple */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  --color-primary-950: #1e1b4b;
+
+  /* Accent purple */
+  --color-accent-400: #c084fc;
+  --color-accent-500: #a855f7;
+  --color-accent-600: #9333ea;
+
+  /* Surface & background */
+  --color-bg: #ffffff;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-bg-tertiary: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f8fafc;
+
+  /* Text */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-text-muted: #94a3b8;
+
+  /* Borders */
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+
+  /* Sidebar */
+  --color-sidebar-bg: #1e1b4b;
+  --color-sidebar-text: #c7d2fe;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-hover: #312e81;
+  --color-sidebar-active: #4338ca;
+
+  /* Misc */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 64px;
+  --header-height: 56px;
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Dark Mode ===== */
+.dark {
+  --color-bg: #0f0d1a;
+  --color-bg-primary: #0f0d1a;
+  --color-bg-secondary: #1a1726;
+  --color-bg-tertiary: #231f33;
+  --color-surface: #1a1726;
+  --color-surface-hover: #231f33;
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #a5b4fc;
+  --color-text-tertiary: #818cf8;
+  --color-text-muted: #6366f1;
+
+  --color-border: #312e81;
+  --color-border-hover: #4338ca;
+
+  --color-sidebar-bg: #0c0a14;
+  --color-sidebar-text: #a5b4fc;
+  --color-sidebar-text-active: #e0e7ff;
+  --color-sidebar-hover: #1e1b4b;
+  --color-sidebar-active: #4f46e5;
+}
+
+/* ===== Base Styles ===== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Custom Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-300);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-400);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-primary-800);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-700);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-300) transparent;
+}
+
+.dark * {
+  scrollbar-color: var(--color-primary-800) transparent;
+}
+
+/* ===== Utility Classes ===== */
+.sidebar-transition {
+  transition: width var(--transition-base), margin-left var(--transition-base),
+    padding var(--transition-base);
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
