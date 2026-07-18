@@ -87,10 +87,9 @@ export function useQuestionsByYear(year: number) {
 export function useQuestionsByTopic(subject: string, topic: string) {
   return useLiveQuery(
     () =>
-      db.questions
-        .where('[subject+topic]')
-        .equals([subject, topic])
-        .toArray(),
+      db.questions.where('subject').equals(subject).toArray().then(
+        (qs) => qs.filter((q) => q.topic === topic)
+      ),
     [subject, topic]
   );
 }

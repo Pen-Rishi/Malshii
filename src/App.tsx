@@ -20,6 +20,7 @@ import BookmarksPage from "@/pages/BookmarksPage";
 import NotesPage from "@/pages/NotesPage";
 import ExportPage from "@/pages/ExportPage";
 import SettingsPage from "@/pages/SettingsPage";
+import ConceptMapPage from "@/pages/ConceptMapPage";
 import NotificationPopup from "@/components/NotificationPopup";
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
               <Route path="/notes" element={<NotesPage />} />
               <Route path="/export" element={<ExportPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/concept-map" element={<ConceptMapPage />} />
             </Routes>
           </div>
         </main>

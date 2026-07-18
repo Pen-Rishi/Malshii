@@ -229,10 +229,8 @@ export default function PracticePage() {
     if (selectedMode === 'subject' && subject) {
       allQuestions = await db.questions.where('subject').equals(subject).toArray();
     } else if (selectedMode === 'topic' && subject && topic) {
-      allQuestions = await db.questions
-        .where('[subject+topic]')
-        .equals([subject, topic])
-        .toArray();
+      const bySubject = await db.questions.where('subject').equals(subject).toArray();
+      allQuestions = bySubject.filter((q) => q.topic === topic);
     } else if (selectedMode === 'year') {
       allQuestions = await db.questions.where('year').equals(year).toArray();
     } else if (selectedMode === 'difficulty') {

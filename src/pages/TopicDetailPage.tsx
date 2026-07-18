@@ -31,10 +31,9 @@ export default function TopicDetailPage() {
   const questions =
     useLiveQuery(
       () =>
-        db.questions
-          .where('[subject+topic]')
-          .equals([subjectName, topicName])
-          .toArray(),
+        db.questions.where('subject').equals(subjectName).toArray().then(
+          (qs) => qs.filter((q) => q.topic === topicName)
+        ),
       [subjectName, topicName],
     ) ?? [];
 
