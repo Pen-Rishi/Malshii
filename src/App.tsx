@@ -20,6 +20,7 @@ import BookmarksPage from "@/pages/BookmarksPage";
 import NotesPage from "@/pages/NotesPage";
 import ExportPage from "@/pages/ExportPage";
 import SettingsPage from "@/pages/SettingsPage";
+import NotificationPopup from "@/components/NotificationPopup";
 
 function App() {
   const { sidebarOpen } = useAppStore();
@@ -35,6 +36,7 @@ function App() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--color-bg)]">
+      <NotificationPopup />
       <Sidebar />
 
       <div
