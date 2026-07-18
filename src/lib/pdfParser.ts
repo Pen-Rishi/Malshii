@@ -15,10 +15,25 @@ export async function parsePDF(file: File): Promise<string> {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-    const pageText = textContent.items
-      .map((item) => ('str' in item ? item.str : ''))
-      .join(' ');
-    textParts.push(pageText);
+    // Group items by Y-coordinate (same line) — items with close Y values are on the same line
+    let lastY: number | null = null;
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const item of textContent.items) {
+      if (!('str' in item)) continue;
+      const ti = item as unknown as { str: string; transform: number[] };
+      const y = Math.round(ti.transform[5]);
+      if (lastY !== null && Math.abs(y - lastY) > 3) {
+        lines.push(currentLine.trim());
+        currentLine = '';
+      }
+      currentLine += (currentLine ? ' ' : '') + ti.str;
+      lastY = y;
+    }
+    if (currentLine.trim()) lines.push(currentLine.trim());
+
+    textParts.push(lines.join('\n'));
   }
 
   return textParts.join('\n\n');
@@ -35,22 +50,36 @@ interface ParsedQuestion {
 export function splitIntoQuestions(text: string, year: number): ParsedQuestion[] {
   const questions: ParsedQuestion[] = [];
 
-  // GATE papers use patterns like "Q.1", "Q.2", "Q 1", "Question 1", etc.
-  // Split by question markers
-  const questionPattern = /(?:^|\n)\s*(?:Q\.?\s*(\d+)|Question\s+(\d+))\s*[.:)—\-\s]/gi;
-  const matches: { index: number; number: number }[] = [];
+  // pdfjs-dist joins text items with spaces, so question markers appear mid-text.
+  // Try multiple patterns from most specific to least specific.
+  const patterns = [
+    // Q.1, Q.2, Q. 1, Q .1, Q . 1 (with or without trailing punctuation)
+    /(?:^|[\s\n])Q\s*\.?\s*(\d{1,2})\b/gi,
+    // Question 1, Question 2
+    /Question\s+(\d{1,2})\b/gi,
+    // Q1), Q2), Q1., Q2.
+    /(?:^|[\s\n])Q(\d{1,2})\s*[.)]/gi,
+  ];
 
-  let match: RegExpExecArray | null;
-  while ((match = questionPattern.exec(text)) !== null) {
-    const qNum = parseInt(match[1] || match[2], 10);
-    if (!isNaN(qNum)) {
-      matches.push({ index: match.index, number: qNum });
+  let matches: { index: number; number: number }[] = [];
+
+  for (const pattern of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      const qNum = parseInt(match[1], 10);
+      if (!isNaN(qNum) && qNum >= 1 && qNum <= 65) {
+        matches.push({ index: match.index, number: qNum });
+      }
     }
+    if (matches.length >= 5) break;
+    matches = [];
   }
 
-  if (matches.length === 0) {
-    // Fallback: try splitting by numbered patterns like "1.", "2.", etc.
-    const fallbackPattern = /(?:^|\n)\s*(\d{1,2})\.\s+/g;
+  // Fallback: bare numbered patterns "1." "2." etc. — only if they form a reasonable sequence
+  if (matches.length < 5) {
+    matches = [];
+    const fallbackPattern = /(?:^|[\s\n])(\d{1,2})\.\s/g;
+    let match: RegExpExecArray | null;
     while ((match = fallbackPattern.exec(text)) !== null) {
       const qNum = parseInt(match[1], 10);
       if (qNum >= 1 && qNum <= 65) {
@@ -58,6 +87,16 @@ export function splitIntoQuestions(text: string, year: number): ParsedQuestion[]
       }
     }
   }
+
+  // Deduplicate: keep only the first occurrence of each question number
+  const seen = new Set<number>();
+  matches = matches
+    .sort((a, b) => a.index - b.index)
+    .filter((m) => {
+      if (seen.has(m.number)) return false;
+      seen.add(m.number);
+      return true;
+    });
 
   // Extract text between consecutive question markers
   for (let i = 0; i < matches.length; i++) {
@@ -80,7 +119,7 @@ function parseQuestionBlock(
   _year: number
 ): ParsedQuestion | null {
   // Remove the question number prefix
-  let text = block.replace(/^\s*(?:Q\.?\s*\d+|Question\s+\d+|\d+\.)\s*[.:)—\-\s]*/i, '').trim();
+  let text = block.replace(/^\s*(?:Q\s*\.?\s*\d{1,2}|Question\s+\d{1,2}|\d{1,2}\.)\s*[.:)—\-\s]*/i, '').trim();
 
   if (text.length < 10) return null;
 
