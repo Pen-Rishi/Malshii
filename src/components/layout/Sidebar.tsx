@@ -17,8 +17,10 @@ import {
   GraduationCap,
   AlertCircle,
   HelpCircle,
+  LogOut,
 } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
+import { useAuthStore } from '@/lib/auth';
 import { GATE_SUBJECTS } from '@/data/subjects';
 import { db } from '@/lib/db';
 
@@ -178,23 +180,38 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Collapse Toggle */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="
-          flex items-center justify-center py-2.5
-          border-t border-indigo-800/30
-          text-indigo-400/60 hover:text-white hover:bg-indigo-800/30
-          transition-colors duration-200
-        "
-        aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-      >
-        {sidebarOpen ? (
-          <ChevronLeft className="w-4 h-4" />
-        ) : (
-          <ChevronRight className="w-4 h-4" />
-        )}
-      </button>
+      {/* Logout + Collapse */}
+      <div className="border-t border-indigo-800/30">
+        <button
+          onClick={() => useAuthStore.getState().logout()}
+          className={`
+            flex items-center gap-3 w-full px-3 py-2.5
+            text-red-400/70 hover:text-red-300 hover:bg-red-500/10
+            transition-colors duration-200 text-sm
+            ${!sidebarOpen ? 'justify-center px-0' : ''}
+          `}
+          aria-label="Logout"
+        >
+          <LogOut className="w-[18px] h-[18px] flex-shrink-0" />
+          {sidebarOpen && <span>Logout</span>}
+        </button>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="
+            flex items-center justify-center w-full py-2.5
+            border-t border-indigo-800/30
+            text-indigo-400/60 hover:text-white hover:bg-indigo-800/30
+            transition-colors duration-200
+          "
+          aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+        >
+          {sidebarOpen ? (
+            <ChevronLeft className="w-4 h-4" />
+          ) : (
+            <ChevronRight className="w-4 h-4" />
+          )}
+        </button>
+      </div>
     </aside>
   );
 }

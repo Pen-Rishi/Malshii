@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { useAppStore } from "@/store/appStore";
+import { useAuthStore } from "@/lib/auth";
 
+import LoginPage from "@/pages/LoginPage";
 import Dashboard from "@/pages/Dashboard";
 import ImportPage from "@/pages/ImportPage";
 import SubjectsPage from "@/pages/SubjectsPage";
@@ -20,13 +23,20 @@ import SettingsPage from "@/pages/SettingsPage";
 
 function App() {
   const { sidebarOpen } = useAppStore();
+  const { isAuthenticated, checkSession } = useAuthStore();
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--color-bg)]">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main area */}
       <div
         className="flex flex-1 flex-col overflow-hidden sidebar-transition"
         style={{
@@ -35,10 +45,8 @@ function App() {
             : "var(--sidebar-collapsed-width)",
         }}
       >
-        {/* Header */}
         <Header />
 
-        {/* Page content */}
         <main
           className="flex-1 overflow-y-auto bg-[var(--color-bg-secondary)] p-6"
           style={{ marginTop: "var(--header-height)" }}
