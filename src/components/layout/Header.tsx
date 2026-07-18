@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import {
   Search,
   Sun,

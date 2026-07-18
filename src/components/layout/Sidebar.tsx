@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import {
   Home,
   Upload,

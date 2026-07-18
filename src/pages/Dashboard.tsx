@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import {
   FileText,
   HelpCircle,

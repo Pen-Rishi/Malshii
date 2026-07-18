@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import {
   ArrowLeft,
   ChevronDown,

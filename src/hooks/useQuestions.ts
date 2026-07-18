@@ -1,4 +1,4 @@
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import { db } from '@/lib/db';
 import type { Question, AnalyticsData } from '@/types';
 

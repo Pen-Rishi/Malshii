@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -59,13 +59,13 @@ export default function QuestionDetailPage() {
   const questionId = Number(id);
 
   const question = useLiveQuery(
-    () => (isNaN(questionId) ? undefined : db.questions.get(questionId)),
+    async () => (isNaN(questionId) ? undefined : db.questions.get(questionId)),
     [questionId],
   );
 
   // All questions sorted for prev/next navigation
   const allQuestions = useLiveQuery(
-    () => db.questions.orderBy('[year+questionNumber]' as never).toArray().catch(() => db.questions.toArray()),
+    () => db.questions.toArray(),
     [],
   );
 
@@ -86,7 +86,7 @@ export default function QuestionDetailPage() {
   const nextQuestion = currentIndex < sortedQuestions.length - 1 ? sortedQuestions[currentIndex + 1] : null;
 
   // Related questions
-  const relatedQuestions = useLiveQuery(async () => {
+  const relatedQuestions = useLiveQuery(async (): Promise<Question[]> => {
     if (!question?.relatedQuestions?.length) return [];
     return db.questions.where('id').anyOf(question.relatedQuestions).toArray();
   }, [question?.relatedQuestions]);

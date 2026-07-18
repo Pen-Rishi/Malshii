@@ -13,7 +13,7 @@ import {
   Position,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import { X, BookOpen, ChevronRight, Network } from 'lucide-react';
 import { db } from '@/lib/db';
 import { GATE_SUBJECTS } from '@/data/subjects';

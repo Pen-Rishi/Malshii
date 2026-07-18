@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import {
   ArrowLeft,
   BookOpen,
@@ -71,8 +71,8 @@ export default function SubjectDetailPage() {
   ) ?? [];
 
   const bookmarks = useLiveQuery(async () => {
-    const qIds = (await db.questions.where('subject').equals(subjectName).toArray()).filter(q => q.bookmarked).map(q => q.id!);
-    return db.questions.where('id').anyOf(qIds).toArray();
+    const all = await db.questions.where('subject').equals(subjectName).toArray();
+    return all.filter(q => q.bookmarked);
   }, [subjectName]) ?? [];
 
   const notes = useLiveQuery(

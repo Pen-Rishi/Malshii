@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseQuery as useLiveQuery } from '@/hooks/useSupabaseQuery';
 import { useNavigate } from 'react-router-dom';
 import {
   Bookmark,
